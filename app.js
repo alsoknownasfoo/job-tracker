@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Load state from localStorage or use default data.js
-  let state = JSON.parse(localStorage.getItem('careerTrackerState'));
+  let state = null;
+  try {
+    state = JSON.parse(localStorage.getItem('careerTrackerState'));
+  } catch(err) {
+    console.warn("localStorage read failed:", err);
+  }
 
   // Purge mock items (r1 through r30) from localStorage
   if (state) {
@@ -316,7 +321,12 @@ function getDragAfterElement(container, y) {
 }
 
 function saveState(data) {
-  localStorage.setItem('careerTrackerState', JSON.stringify(data));
+  try {
+    localStorage.setItem('careerTrackerState', JSON.stringify(data));
+  } catch (err) {
+    console.warn('localStorage is blocked or unavailable:', err);
+  }
+  
   fetch('/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
