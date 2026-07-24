@@ -68,9 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const promptText = `CRITICAL: You are acting strictly as a data entry and document generator. DO NOT install packages, write code, or modify the server.
 1. Read the job posting at: ${url.trim()}
 2. Parse the details and add a new entry to data/data.js matching the existing schema.
-3. Generate an ATS-optimized Resume and Cover Letter for the role using templates in data/templates/.
-4. Save outputs to data/ats/<Company>_<Title>/
-5. Stop and reply with a summary.
+3. Stop and reply with a summary of the parsed job details.
 CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading job description...", "Parsing details...", "Saving to data.js...", etc) so the user can see your progress.`;
       runAgy(promptText, document.getElementById('add-btn'));
     }
