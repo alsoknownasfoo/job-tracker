@@ -54,7 +54,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { prompt } = JSON.parse(body);
-        const child = spawn('agy', ['--dangerously-skip-permissions', prompt]);
+        const child = spawn('unbuffer', ['-p', 'agy', '--dangerously-skip-permissions', prompt]);
         
         res.writeHead(200, {
           'Content-Type': 'text/plain',
