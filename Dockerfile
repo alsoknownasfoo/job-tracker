@@ -1,9 +1,10 @@
-FROM node:20-alpine
+FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
-RUN apk add --no-cache curl bash && \
-    curl -fsSL https://antigravity.google/cli/install.sh | bash
+RUN apt-get update && apt-get install -y curl bash ca-certificates && \
+    curl -fsSL https://antigravity.google/cli/install.sh | bash && \
+    rm -rf /var/lib/apt/lists/*
 ENV PATH="/root/.local/bin:${PATH}"
 COPY . .
 VOLUME ["/app/data"]
