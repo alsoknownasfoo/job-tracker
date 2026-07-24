@@ -270,7 +270,7 @@ function createCard(role) {
 5. Stop and reply with the file paths.
 CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading templates...", "Reading job description...", "Generating Resume...", etc) so the user can see your progress.`;
         
-        runAgy(promptText, generateBtn);
+        runAgy(promptText, generateBtn, 'high');
       }
     });
   }
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-async function runAgy(promptText, buttonElement) {
+async function runAgy(promptText, buttonElement, effort = 'medium') {
   const originalHtml = buttonElement.innerHTML;
   buttonElement.innerHTML = `<div class="spinner"></div>`;
   buttonElement.dataset.running = "true";
@@ -354,7 +354,7 @@ async function runAgy(promptText, buttonElement) {
     const response = await fetch('/api/agy', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: promptText })
+      body: JSON.stringify({ prompt: promptText, effort })
     });
     
     const reader = response.body.getReader();

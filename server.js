@@ -53,8 +53,8 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', () => {
       try {
-        const { prompt } = JSON.parse(body);
-        const cmdArgs = ['-p', 'agy', '--model', 'gemini-3.6-flash', '--add-dir', '/app/data', '--dangerously-skip-permissions', '--print', prompt];
+        const { prompt, effort = 'medium' } = JSON.parse(body);
+        const cmdArgs = ['-p', 'agy', '--model', 'gemini-3.6-flash', '--effort', effort, '--add-dir', '/app/data', '--dangerously-skip-permissions', '--print', prompt];
         console.log(`[EXEC] Running command: unbuffer ${cmdArgs.join(' ')}`);
         
         const child = spawn('unbuffer', cmdArgs, {
