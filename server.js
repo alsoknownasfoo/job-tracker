@@ -54,7 +54,10 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { prompt } = JSON.parse(body);
-        const child = spawn('unbuffer', ['-p', 'agy', '--dangerously-skip-permissions', '--print', prompt], {
+        const cmdArgs = ['-p', 'agy', '--dangerously-skip-permissions', '--print', prompt];
+        console.log(`[EXEC] Running command: unbuffer ${cmdArgs.join(' ')}`);
+        
+        const child = spawn('unbuffer', cmdArgs, {
           env: { ...process.env, TERM: 'dumb', NO_COLOR: '1' }
         });
         
@@ -67,12 +70,17 @@ const server = http.createServer((req, res) => {
         const stripAnsi = (str) => str.replace(/\x1B\[[^a-zA-Z]*[a-zA-Z]/g, '').replace(/\r/g, '');
 
         child.stdout.on('data', (data) => {
-          res.write(stripAnsi(data.toString()));
+          const cleanStr = stripAnsi(data.toString());
+          process.stdout.write(cleanStr); // Log to Docker
+          res.write(cleanStr);
         });
         child.stderr.on('data', (data) => {
-          res.write(stripAnsi(data.toString()));
+          const cleanStr = stripAnsi(data.toString());
+          process.stderr.write(cleanStr); // Log to Docker
+          res.write(cleanStr);
         });
         child.on('close', (code) => {
+          console.log(`\n[EXEC] Process exited with code ${code}`);
           res.end(`\n\nProcess exited with code ${code}`);
         });
         child.on('error', (err) => {
