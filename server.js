@@ -22,7 +22,11 @@ const server = http.createServer((req, res) => {
       try {
         const data = JSON.parse(body);
         const fileContent = `const rolesData = ${JSON.stringify(data, null, 2)};\n`;
-        fs.writeFileSync(path.join(DIR, 'data.js'), fileContent);
+        const dataPath = path.join(DIR, 'data', 'data.js');
+        if (!fs.existsSync(path.dirname(dataPath))) {
+          fs.mkdirSync(path.dirname(dataPath), { recursive: true });
+        }
+        fs.writeFileSync(dataPath, fileContent);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true }));
       } catch (err) {
@@ -34,15 +38,27 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  let filePath = path.join(DIR, req.url === '/' ? 'index.html' : req.url);
+  let filePath;
+  if (req.url === '/') {
+    filePath = path.join(DIR, 'index.html');
+  } else if (req.url === '/data.js') {
+    filePath = path.join(DIR, 'data', 'data.js');
+  } else {
+    filePath = path.join(DIR, req.url);
+  }
   const extname = String(path.extname(filePath)).toLowerCase();
   const contentType = mimeTypes[extname] || 'application/octet-stream';
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
       if(error.code == 'ENOENT') {
-        res.writeHead(404);
-        res.end('File not found');
+        if (req.url === '/data.js') {
+          res.writeHead(200, { 'Content-Type': 'text/javascript' });
+          res.end('const rolesData = [];\n');
+        } else {
+          res.writeHead(404);
+          res.end('File not found');
+        }
       }
       else {
         res.writeHead(500);
