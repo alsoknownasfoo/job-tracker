@@ -45,7 +45,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { prompt } = JSON.parse(body);
-        const child = spawn('agy', [prompt]);
+        const child = spawn('agy', ['--auto-approve', 'write_file:/app/data/*', prompt]);
         
         res.writeHead(200, {
           'Content-Type': 'text/plain',

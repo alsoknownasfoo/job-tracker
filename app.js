@@ -258,7 +258,7 @@ function createCard(role) {
       e.stopPropagation();
       if (generateBtn.dataset.running) return;
       if(confirm(`Generate custom ATS Resume and Cover Letter for the ${role.title} role at ${role.company}?`)) {
-        const promptText = `Please generate an ATS-optimized Resume and Cover Letter for the ${role.title} role at ${role.company} using my Obsidian Career DB and the ATS templates. Save the outputs into my Obsidian vault under 2-Areas/Professional/Career/Applications/${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}/ and link to them when completed. Here is the URL for the job: ${role.url}`;
+        const promptText = `Please generate an ATS-optimized Resume and Cover Letter for the ${role.title} role at ${role.company} using the ATS templates found in data/templates/. Save the outputs into data/ats/${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}/ and link to them when completed. Here is the URL for the job: ${role.url}`;
         
         runAgy(promptText, generateBtn);
       }
@@ -267,11 +267,11 @@ function createCard(role) {
 
   const openObsidianBtn = card.querySelector('.open-obsidian-btn');
   if (openObsidianBtn) {
+    openObsidianBtn.title = "View ATS Documents";
     openObsidianBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const folderName = `${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}`;
-      const encodedFile = encodeURIComponent(`2-Areas/Professional/Career/Applications/${folderName}/Resume.md`);
-      window.open(`obsidian://open?file=${encodedFile}`, '_blank');
+      window.open(`/data/ats/${folderName}/Resume.md`, '_blank');
     });
   }
 
