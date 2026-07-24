@@ -342,7 +342,7 @@ async function runAgy(promptText, buttonElement) {
   buttonElement.dataset.running = "true";
   buttonElement.style.pointerEvents = 'auto'; // ensure click works
   
-  let output = 'Running command...\n';
+  let output = `> agy "${promptText}"\n\nRunning command...\n`;
   
   const clickHandler = (e) => {
     e.stopPropagation();
