@@ -1,4 +1,11 @@
+window.existingAtsFolders = new Set();
 document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('/api/ats-folders');
+    if (res.ok) window.existingAtsFolders = new Set(await res.json());
+  } catch(err) {
+    console.error("Failed to load ATS folders", err);
+  }
   // Load state from localStorage
   let state = null;
   try {
@@ -229,19 +236,33 @@ function createCard(role) {
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
           </svg>
         </button>
-        ${role.atsGenerated ? `
-        <button class="open-obsidian-btn" aria-label="View ATS Files" data-tooltip="View ATS Files" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; white-space: nowrap;">
-          View ATS
+        ${window.existingAtsFolders.has(role.company + '_' + role.title.replace(/[^a-zA-Z0-9]/g, '')) ? `
+        <button class="open-obsidian-btn" aria-label="View ATS Files" data-tooltip="View ATS Files">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+            <path d="M13 2v7h7"></path>
+          </svg>
         </button>
         ` : `
-        <button class="generate-btn" aria-label="Generate ATS Materials" data-tooltip="Generate ATS" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; white-space: nowrap;">
-          Generate
+        <button class="generate-btn" aria-label="Generate ATS Materials" data-tooltip="Generate ATS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 4V2"/>
+            <path d="M15 16v-2"/>
+            <path d="M8 9h2"/>
+            <path d="M20 9h2"/>
+            <path d="M17.8 11.8L19 13"/>
+            <path d="M15 9h.01"/>
+            <path d="M17.8 6.2L19 5"/>
+            <path d="M3 21l9-9"/>
+            <path d="M12.2 6.2L11 5"/>
+          </svg>
         </button>
         `}
         <a href="${role.url}" class="apply-link" target="_blank" draggable="false" data-tooltip="View Role">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
           </svg>
         </a>
       </div>
@@ -284,15 +305,11 @@ CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of 
         
         await runAgy(promptText, generateBtn, 'high');
         
-        // Mark as generated and save state
-        role.atsGenerated = true;
+        // Mark as generated
+        const folderName = `${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}`;
+        window.existingAtsFolders.add(folderName);
         let currentState = JSON.parse(localStorage.getItem('careerTrackerState')) || [];
-        const index = currentState.findIndex(r => r.id === role.id);
-        if (index > -1) {
-          currentState[index].atsGenerated = true;
-          saveState(currentState);
-          renderBoard(currentState); // Rerender to show View ATS button
-        }
+        renderBoard(currentState); // Rerender to show View ATS button
       }
     });
   }

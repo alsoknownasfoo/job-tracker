@@ -48,6 +48,20 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (req.method === 'GET' && pathname === '/api/ats-folders') {
+    fs.readdir(atsDir, { withFileTypes: true }, (err, files) => {
+      if (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: err.message }));
+        return;
+      }
+      const folders = files.filter(f => f.isDirectory()).map(f => f.name);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(folders));
+    });
+    return;
+  }
+
   if (req.method === 'POST' && pathname === '/api/agy') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
