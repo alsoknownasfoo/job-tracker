@@ -6,6 +6,7 @@ RUN npm install --production
 RUN apt-get update && apt-get install -y curl bash ca-certificates unzip && \
     curl -fsSL https://antigravity.google/cli/install.sh | bash && \
     rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /root/.gemini && ln -s /app/data/agy-config /root/.gemini/antigravity-cli
 ENV PATH="/root/.local/bin:${PATH}"
 COPY . .
 VOLUME ["/app/data"]

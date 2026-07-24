@@ -13,6 +13,15 @@ const mimeTypes = {
   '.json': 'application/json',
 };
 
+const dataDir = path.join(DIR, 'data');
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
+const agyConfigDir = path.join(dataDir, 'agy-config');
+if (!fs.existsSync(agyConfigDir)) fs.mkdirSync(agyConfigDir, { recursive: true });
+
+const atsDir = path.join(dataDir, 'ats');
+if (!fs.existsSync(atsDir)) fs.mkdirSync(atsDir, { recursive: true });
+
 const server = http.createServer((req, res) => {
   if (req.method === 'POST' && req.url === '/save') {
     let body = '';
@@ -24,9 +33,7 @@ const server = http.createServer((req, res) => {
         const data = JSON.parse(body);
         const fileContent = `const rolesData = ${JSON.stringify(data, null, 2)};\n`;
         const dataPath = path.join(DIR, 'data', 'data.js');
-        if (!fs.existsSync(path.dirname(dataPath))) {
-          fs.mkdirSync(path.dirname(dataPath), { recursive: true });
-        }
+        
         fs.writeFileSync(dataPath, fileContent);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true }));
