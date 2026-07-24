@@ -3,7 +3,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
 RUN apk add --no-cache curl bash && \
-    curl -sL https://antigravity.google/install.sh | bash || true
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+ENV PATH="/root/.local/bin:${PATH}"
 COPY . .
 VOLUME ["/app/data"]
 EXPOSE 3000
