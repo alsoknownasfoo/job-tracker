@@ -65,7 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.currentTarget.dataset.running) return;
     const url = prompt("Enter the URL of the job posting:");
     if (url && url.trim() !== "") {
-      const promptText = `Please parse this job posting and add it to my Career Tracker dashboard: ${url.trim()}. Please also generate ATS documents by default and link to them when completed.`;
+      const promptText = `CRITICAL: You are acting strictly as a data entry and document generator. DO NOT install packages, write code, or modify the server.
+1. Read the job posting at: ${url.trim()}
+2. Parse the details and add a new entry to data/data.js matching the existing schema.
+3. Generate an ATS-optimized Resume and Cover Letter for the role using templates in data/templates/.
+4. Save outputs to data/ats/<Company>_<Title>/
+5. Stop and reply with a summary.`;
       runAgy(promptText, document.getElementById('add-btn'));
     }
   });
@@ -258,7 +263,12 @@ function createCard(role) {
       e.stopPropagation();
       if (generateBtn.dataset.running) return;
       if(confirm(`Generate custom ATS Resume and Cover Letter for the ${role.title} role at ${role.company}?`)) {
-        const promptText = `Please generate an ATS-optimized Resume and Cover Letter for the ${role.title} role at ${role.company} using the ATS templates found in data/templates/. Save the outputs into data/ats/${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}/ and link to them when completed. Here is the URL for the job: ${role.url}`;
+        const promptText = `CRITICAL: You are acting strictly as a document generator. DO NOT install packages, write code, or modify the server.
+1. Read the ATS templates in data/templates/.
+2. Read the job description at: ${role.url}.
+3. Generate an ATS-optimized Resume and Cover Letter for the ${role.title} role at ${role.company}.
+4. Save the outputs into data/ats/${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}/ Resume.md and CoverLetter.md.
+5. Stop and reply with the file paths.`;
         
         runAgy(promptText, generateBtn);
       }
