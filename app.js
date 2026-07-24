@@ -60,17 +60,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Setup Add button
-  document.getElementById('add-btn').addEventListener('click', (e) => {
+  document.getElementById('add-btn').addEventListener('click', async (e) => {
     if (e.currentTarget.dataset.running) return;
     const url = prompt("Enter the URL of the job posting:");
     if (url && url.trim() !== "") {
-      const promptText = `CRITICAL: You are acting strictly as a data entry and document generator. DO NOT install packages, write code, or modify the server.
+      const promptText = `CRITICAL: You are acting strictly as a data parser. DO NOT install packages, write code, or modify the server.
 1. Read the job posting at: ${url.trim()}
-2. Parse the details and add a new entry to data/data.js matching the existing schema.
-3. Stop and reply with a summary of the parsed job details.
-CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading job description...", "Parsing details...", "Saving to data.js...", etc) so the user can see your progress.`;
-      runAgy(promptText, document.getElementById('add-btn'));
+2. Parse the details into a JSON object matching the existing schema in data.js.
+3. Stop and reply with a summary of the parsed job details, AND the parsed JSON object enclosed in a \`\`\`json block. DO NOT modify data.js yourself.
+CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading job description...", "Parsing details...", etc) so the user can see your progress.`;
+      const output = await runAgy(promptText, document.getElementById('add-btn'));
+      
+      const jsonMatch = output.match(/```json\n([\s\S]*?)\n```/);
+      if (jsonMatch) {
+        try {
+          const newRole = JSON.parse(jsonMatch[1]);
+          if (!newRole.id) newRole.id = 'r' + Date.now();
+          if (!newRole.status) newRole.status = 'to_apply';
+          state.push(newRole);
+          saveState(state);
+          renderBoard(state);
+        } catch(err) {
+          console.error("Failed to parse JSON from agent", err);
+        }
+      }
     }
   });
 
@@ -340,7 +353,8 @@ async function runAgy(promptText, buttonElement, effort = 'medium') {
   buttonElement.dataset.running = "true";
   buttonElement.style.pointerEvents = 'auto'; // ensure click works
   
-  let output = `> agy "${promptText}"\n\nRunning command...\n`;
+  const timestamp = new Date().toLocaleTimeString();
+  let output = `[${timestamp}] > agy "${promptText}"\n\n`;
   
   const clickHandler = (e) => {
     e.stopPropagation();
@@ -374,4 +388,5 @@ async function runAgy(promptText, buttonElement, effort = 'medium') {
     buttonElement.removeEventListener('click', clickHandler);
     delete buttonElement.dataset.running;
   }
+  return output;
 }
