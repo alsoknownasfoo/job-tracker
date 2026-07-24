@@ -106,6 +106,24 @@ const server = http.createServer((req, res) => {
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
+      if (error.code === 'EISDIR') {
+        fs.readdir(filePath, (err, files) => {
+          if (err) {
+            res.writeHead(500);
+            res.end('Server Error: ' + err.code);
+          } else {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            let html = `<html><head><style>body{font-family:sans-serif;padding:20px;background:#1a1a1a;color:#fff;} a{color:#4fc3f7;text-decoration:none;display:block;padding:8px 0;} a:hover{text-decoration:underline;}</style></head><body><h2>Files in ${pathname}</h2><ul>`;
+            files.forEach(file => {
+              const fileHref = pathname.endsWith('/') ? `${pathname}${file}` : `${pathname}/${file}`;
+              html += `<li><a href="${fileHref}">${file}</a></li>`;
+            });
+            html += `</ul></body></html>`;
+            res.end(html);
+          }
+        });
+        return;
+      }
       if(error.code == 'ENOENT') {
         if (pathname === '/data/data.json') {
           res.writeHead(200, { 'Content-Type': 'application/json' });

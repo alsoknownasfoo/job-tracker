@@ -230,23 +230,12 @@ function createCard(role) {
           </svg>
         </button>
         ${role.atsGenerated ? `
-        <button class="open-obsidian-btn" aria-label="Open ATS in Obsidian" data-tooltip="Open in Obsidian">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
+        <button class="open-obsidian-btn" aria-label="View ATS Files" data-tooltip="View ATS Files" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; white-space: nowrap;">
+          View ATS
         </button>
         ` : `
-        <button class="generate-btn" aria-label="Generate ATS Materials" data-tooltip="Generate ATS">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <path d="M16 13H8"></path>
-            <path d="M16 17H8"></path>
-            <path d="M10 9H8"></path>
-            <path d="M18.5 4.5l1.5 1.5-1.5 1.5L17 6l1.5-1.5z"></path>
-          </svg>
+        <button class="generate-btn" aria-label="Generate ATS Materials" data-tooltip="Generate ATS" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; white-space: nowrap;">
+          Generate
         </button>
         `}
         <a href="${role.url}" class="apply-link" target="_blank" draggable="false" data-tooltip="View Role">
@@ -281,7 +270,7 @@ function createCard(role) {
 
   const generateBtn = card.querySelector('.generate-btn');
   if (generateBtn) {
-    generateBtn.addEventListener('click', (e) => {
+    generateBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
       if (generateBtn.dataset.running) return;
       if(confirm(`Generate custom ATS Resume and Cover Letter for the ${role.title} role at ${role.company}?`)) {
@@ -293,18 +282,27 @@ function createCard(role) {
 5. Stop and reply with the file paths.
 CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading templates...", "Reading job description...", "Generating Resume...", etc) so the user can see your progress.`;
         
-        runAgy(promptText, generateBtn, 'high');
+        await runAgy(promptText, generateBtn, 'high');
+        
+        // Mark as generated and save state
+        role.atsGenerated = true;
+        let currentState = JSON.parse(localStorage.getItem('careerTrackerState')) || [];
+        const index = currentState.findIndex(r => r.id === role.id);
+        if (index > -1) {
+          currentState[index].atsGenerated = true;
+          saveState(currentState);
+          renderBoard(currentState); // Rerender to show View ATS button
+        }
       }
     });
   }
 
   const openObsidianBtn = card.querySelector('.open-obsidian-btn');
   if (openObsidianBtn) {
-    openObsidianBtn.title = "View ATS Documents";
     openObsidianBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const folderName = `${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}`;
-      window.open(`/data/ats/${folderName}/Resume.md`, '_blank');
+      window.open(`/data/ats/${folderName}/`, '_blank');
     });
   }
 
