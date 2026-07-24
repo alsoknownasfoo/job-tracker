@@ -23,7 +23,9 @@ const atsDir = path.join(dataDir, 'ats');
 if (!fs.existsSync(atsDir)) fs.mkdirSync(atsDir, { recursive: true });
 
 const server = http.createServer((req, res) => {
-  if (req.method === 'POST' && req.url === '/save') {
+  const pathname = req.url.split('?')[0];
+
+  if (req.method === 'POST' && pathname === '/save') {
     let body = '';
     req.on('data', chunk => {
       body += chunk.toString();
@@ -46,7 +48,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (req.method === 'POST' && req.url === '/api/agy') {
+  if (req.method === 'POST' && pathname === '/api/agy') {
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', () => {
@@ -81,10 +83,10 @@ const server = http.createServer((req, res) => {
   }
 
   let filePath;
-  if (req.url === '/') {
+  if (pathname === '/') {
     filePath = path.join(DIR, 'index.html');
   } else {
-    filePath = path.join(DIR, req.url);
+    filePath = path.join(DIR, pathname);
   }
   const extname = String(path.extname(filePath)).toLowerCase();
   const contentType = mimeTypes[extname] || 'application/octet-stream';
@@ -92,7 +94,7 @@ const server = http.createServer((req, res) => {
   fs.readFile(filePath, (error, content) => {
     if (error) {
       if(error.code == 'ENOENT') {
-        if (req.url === '/data/data.js') {
+        if (pathname === '/data/data.js') {
           res.writeHead(200, { 'Content-Type': 'text/javascript' });
           res.end('const rolesData = [];\n');
         } else {
