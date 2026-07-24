@@ -54,7 +54,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { prompt } = JSON.parse(body);
-        const child = spawn('unbuffer', ['-p', 'agy', '--print', '--dangerously-skip-permissions', prompt], {
+        const child = spawn('unbuffer', ['-p', 'agy', '--dangerously-skip-permissions', '--print', prompt], {
           env: { ...process.env, TERM: 'dumb', NO_COLOR: '1' }
         });
         
@@ -63,8 +63,8 @@ const server = http.createServer((req, res) => {
           'Transfer-Encoding': 'chunked'
         });
         
-        // Regex to match ANSI escape codes including extended CSI and DCS sequences
-        const stripAnsi = (str) => str.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '');
+        // Regex to match ANSI escape codes including extended CSI and DCS sequences, and remove carriage returns
+        const stripAnsi = (str) => str.replace(/\x1B\[[^a-zA-Z]*[a-zA-Z]/g, '').replace(/\r/g, '');
 
         child.stdout.on('data', (data) => {
           res.write(stripAnsi(data.toString()));

@@ -179,7 +179,7 @@ function createCard(role) {
   card.innerHTML = `
     <div class="card-header">
       <div class="company-info">
-        <img src="https://logo.clearbit.com/${domain}" class="company-logo" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=${domain}&sz=128'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';};" alt="" draggable="false">
+        <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" class="company-logo" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" alt="" draggable="false">
         <div class="company-initials" style="display:none;">${role.company.charAt(0)}</div>
         <div class="company">${role.company}</div>
       </div>
