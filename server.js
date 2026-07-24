@@ -54,18 +54,23 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { prompt } = JSON.parse(body);
-        const child = spawn('unbuffer', ['-p', 'agy', '--dangerously-skip-permissions', prompt]);
+        const child = spawn('unbuffer', ['-p', 'agy', '--dangerously-skip-permissions', prompt], {
+          env: { ...process.env, TERM: 'dumb', NO_COLOR: '1' }
+        });
         
         res.writeHead(200, {
           'Content-Type': 'text/plain',
           'Transfer-Encoding': 'chunked'
         });
         
+        // Regex to match ANSI escape codes including extended CSI and DCS sequences
+        const stripAnsi = (str) => str.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '');
+
         child.stdout.on('data', (data) => {
-          res.write(data);
+          res.write(stripAnsi(data.toString()));
         });
         child.stderr.on('data', (data) => {
-          res.write(data);
+          res.write(stripAnsi(data.toString()));
         });
         child.on('close', (code) => {
           res.end(`\n\nProcess exited with code ${code}`);
