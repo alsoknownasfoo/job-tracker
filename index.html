@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Career Tracker Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <main class="kanban-board" style="margin-top: 1rem;">
+      
+      <div class="kanban-column" data-status="to_apply">
+        <div class="column-header">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <h2>Roles</h2>
+            <span class="count" id="count-to_apply">0</span>
+          </div>
+          <button id="add-btn" class="icon-btn" aria-label="Add Role" title="Add Role">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="column-body" id="col-to_apply"></div>
+      </div>
+
+      <div class="kanban-column" data-status="applied">
+        <div class="column-header">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <h2>Applied</h2>
+            <span class="count" id="count-applied">0</span>
+          </div>
+        </div>
+        <div class="column-body" id="col-applied"></div>
+      </div>
+
+      <div class="kanban-column" data-status="interviewing">
+        <div class="column-header">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <h2>Interviewing</h2>
+            <span class="count" id="count-interviewing">0</span>
+          </div>
+        </div>
+        <div class="column-body" id="col-interviewing"></div>
+      </div>
+
+      <div class="kanban-column" data-status="offer">
+        <div class="column-header">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <h2>Offer!</h2>
+            <span class="count" id="count-offer">0</span>
+          </div>
+        </div>
+        <div class="column-body" id="col-offer"></div>
+      </div>
+
+      <div class="kanban-column" data-status="rejected">
+        <div class="column-header">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <h2>Declined</h2>
+            <span class="count" id="count-rejected">0</span>
+          </div>
+        </div>
+        <div class="column-body" id="col-rejected"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
