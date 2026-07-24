@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading job description...", "Parsing details...", etc) so the user can see your progress.`;
       const output = await runAgy(promptText, document.getElementById('add-btn'));
       
-      const jsonMatch = output.match(/```json\n([\s\S]*?)\n```/);
+      const jsonMatch = output.match(/```(?:json)?\s*\n([\s\S]*?)\n```/i);
       if (jsonMatch) {
         try {
           const newRole = JSON.parse(jsonMatch[1]);
