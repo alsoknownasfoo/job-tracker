@@ -54,7 +54,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { prompt } = JSON.parse(body);
-        const child = spawn('unbuffer', ['-p', 'agy', '--dangerously-skip-permissions', prompt], {
+        const child = spawn('unbuffer', ['-p', 'agy', '--print', '--dangerously-skip-permissions', prompt], {
           env: { ...process.env, TERM: 'dumb', NO_COLOR: '1' }
         });
         
