@@ -7,11 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.warn("localStorage read failed:", err);
   }
 
-  // Purge mock items (r1 through r30) from localStorage
-  if (state) {
-    state = state.filter(r => r.id === 'r31' || !r.id.startsWith('r'));
-    saveState(state);
-  }
+
   
   let rolesData = [];
   try {
