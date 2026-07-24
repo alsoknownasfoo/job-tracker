@@ -61,18 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Setup Add button
-  document.getElementById('add-btn').addEventListener('click', () => {
+  document.getElementById('add-btn').addEventListener('click', (e) => {
+    if (e.currentTarget.dataset.running) return;
     const url = prompt("Enter the URL of the job posting:");
     if (url && url.trim() !== "") {
       const promptText = `Please parse this job posting and add it to my Career Tracker dashboard: ${url.trim()}. Please also generate ATS documents by default and link to them when completed.`;
-      navigator.clipboard.writeText(promptText).then(() => {
-        window.location.href = "antigravity://";
-        setTimeout(() => {
-          alert("Copied to clipboard! If Antigravity didn't open automatically, please switch back manually and paste the message into the chat.");
-        }, 500);
-      }).catch(err => {
-        alert("Please paste this URL into the Antigravity chat so I can parse it for you: " + url);
-      });
+      runAgy(promptText, document.getElementById('add-btn'));
     }
   });
 
@@ -262,17 +256,11 @@ function createCard(role) {
   if (generateBtn) {
     generateBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (generateBtn.dataset.running) return;
       if(confirm(`Generate custom ATS Resume and Cover Letter for the ${role.title} role at ${role.company}?`)) {
         const promptText = `Please generate an ATS-optimized Resume and Cover Letter for the ${role.title} role at ${role.company} using my Obsidian Career DB and the ATS templates. Save the outputs into my Obsidian vault under 2-Areas/Professional/Career/Applications/${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}/ and link to them when completed. Here is the URL for the job: ${role.url}`;
         
-        navigator.clipboard.writeText(promptText).then(() => {
-          window.location.href = "antigravity://";
-          setTimeout(() => {
-            alert("Copied to clipboard! If Antigravity didn't open automatically, please switch back manually and paste the message into the chat.");
-          }, 500);
-        }).catch(err => {
-          alert("Please paste this prompt into the Antigravity chat: " + promptText);
-        });
+        runAgy(promptText, generateBtn);
       }
     });
   }
@@ -311,4 +299,69 @@ function saveState(data) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   }).catch(err => console.error('Failed to save to server', err));
+}
+
+// --- CLI Execution & Modal ---
+let currentOutputElement = null;
+
+function showModal() {
+  const modal = document.getElementById('cli-modal');
+  if (modal) modal.classList.add('active');
+  currentOutputElement = document.getElementById('modal-output');
+}
+
+function updateModal(text) {
+  if (currentOutputElement) {
+    currentOutputElement.textContent = text;
+    currentOutputElement.scrollTop = currentOutputElement.scrollHeight;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('modal-close-btn')?.addEventListener('click', () => {
+    document.getElementById('cli-modal').classList.remove('active');
+    currentOutputElement = null;
+  });
+});
+
+async function runAgy(promptText, buttonElement) {
+  const originalHtml = buttonElement.innerHTML;
+  buttonElement.innerHTML = `<div class="spinner"></div>`;
+  buttonElement.dataset.running = "true";
+  buttonElement.style.pointerEvents = 'auto'; // ensure click works
+  
+  let output = 'Running command...\n';
+  
+  const clickHandler = (e) => {
+    e.stopPropagation();
+    showModal();
+    updateModal(output);
+  };
+  
+  buttonElement.addEventListener('click', clickHandler);
+  
+  try {
+    const response = await fetch('/api/agy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: promptText })
+    });
+    
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      output += decoder.decode(value);
+      updateModal(output);
+    }
+  } catch (err) {
+    output += `\nError: ${err.message}`;
+    updateModal(output);
+  } finally {
+    buttonElement.innerHTML = originalHtml;
+    buttonElement.removeEventListener('click', clickHandler);
+    delete buttonElement.dataset.running;
+  }
 }

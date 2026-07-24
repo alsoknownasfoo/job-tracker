@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { spawn } = require('child_process');
 
 const PORT = 3000;
 const DIR = __dirname;
@@ -33,6 +34,40 @@ const server = http.createServer((req, res) => {
         console.error(err);
         res.writeHead(500);
         res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/api/agy') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const { prompt } = JSON.parse(body);
+        const child = spawn('ato', [prompt]);
+        
+        res.writeHead(200, {
+          'Content-Type': 'text/plain',
+          'Transfer-Encoding': 'chunked'
+        });
+        
+        child.stdout.on('data', (data) => {
+          res.write(data);
+        });
+        child.stderr.on('data', (data) => {
+          res.write(data);
+        });
+        child.on('close', (code) => {
+          res.end(`\n\nProcess exited with code ${code}`);
+        });
+        child.on('error', (err) => {
+          res.write(`\n\nFailed to start process: ${err.message}\nMake sure 'ato' is installed and accessible in this environment.`);
+          res.end();
+        });
+      } catch (err) {
+        res.writeHead(500);
+        res.end(err.message);
       }
     });
     return;
