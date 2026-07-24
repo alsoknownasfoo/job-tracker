@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Load state from localStorage or use default data.js
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load state from localStorage
   let state = null;
   try {
     state = JSON.parse(localStorage.getItem('careerTrackerState'));
@@ -13,11 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
     saveState(state);
   }
   
+  let rolesData = [];
+  try {
+    const res = await fetch('/data/data.json?t=' + Date.now());
+    if (res.ok) {
+      rolesData = await res.json();
+    }
+  } catch(err) {
+    console.error("Failed to load data.json", err);
+  }
+
   if (!state || state.length === 0) {
-    state = rolesData; // from data.js
+    state = rolesData; 
     saveState(state);
   } else {
-    // Merge any new roles from data.js that aren't in localStorage yet, and update existing
+    // Merge any new roles from data.json that aren't in localStorage yet, and update existing
     let hasUpdates = false;
     rolesData.forEach(roleData => {
       const existingRole = state.find(r => r.id === roleData.id);
@@ -25,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         state.push(roleData);
         hasUpdates = true;
       } else {
-        // Sync any new properties like salary or atsGenerated
         if (roleData.salary && existingRole.salary !== roleData.salary) {
           existingRole.salary = roleData.salary;
           hasUpdates = true;

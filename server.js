@@ -33,8 +33,8 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const data = JSON.parse(body);
-        const fileContent = `const rolesData = ${JSON.stringify(data, null, 2)};\n`;
-        const dataPath = path.join(DIR, 'data', 'data.js');
+        const fileContent = JSON.stringify(data, null, 2) + '\n';
+        const dataPath = path.join(DIR, 'data', 'data.json');
         
         fs.writeFileSync(dataPath, fileContent);
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -107,9 +107,9 @@ const server = http.createServer((req, res) => {
   fs.readFile(filePath, (error, content) => {
     if (error) {
       if(error.code == 'ENOENT') {
-        if (pathname === '/data/data.js') {
-          res.writeHead(200, { 'Content-Type': 'text/javascript' });
-          res.end('const rolesData = [];\n');
+        if (pathname === '/data/data.json') {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end('[]\n');
         } else {
           res.writeHead(404);
           res.end('File not found');
@@ -122,7 +122,7 @@ const server = http.createServer((req, res) => {
     }
     else {
       const headers = { 'Content-Type': contentType };
-      if (pathname === '/data/data.js') {
+      if (pathname === '/data/data.json') {
         headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
         headers['Pragma'] = 'no-cache';
         headers['Expires'] = '0';
