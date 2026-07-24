@@ -41,8 +41,6 @@ const server = http.createServer((req, res) => {
   let filePath;
   if (req.url === '/') {
     filePath = path.join(DIR, 'index.html');
-  } else if (req.url === '/data.js') {
-    filePath = path.join(DIR, 'data', 'data.js');
   } else {
     filePath = path.join(DIR, req.url);
   }
@@ -52,7 +50,7 @@ const server = http.createServer((req, res) => {
   fs.readFile(filePath, (error, content) => {
     if (error) {
       if(error.code == 'ENOENT') {
-        if (req.url === '/data.js') {
+        if (req.url === '/data/data.js') {
           res.writeHead(200, { 'Content-Type': 'text/javascript' });
           res.end('const rolesData = [];\n');
         } else {
