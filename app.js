@@ -70,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
 2. Parse the details and add a new entry to data/data.js matching the existing schema.
 3. Generate an ATS-optimized Resume and Cover Letter for the role using templates in data/templates/.
 4. Save outputs to data/ats/<Company>_<Title>/
-5. Stop and reply with a summary.`;
+5. Stop and reply with a summary.
+CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading job description...", "Parsing details...", "Saving to data.js...", etc) so the user can see your progress.`;
       runAgy(promptText, document.getElementById('add-btn'));
     }
   });
@@ -268,7 +269,8 @@ function createCard(role) {
 2. Read the job description at: ${role.url}.
 3. Generate an ATS-optimized Resume and Cover Letter for the ${role.title} role at ${role.company}.
 4. Save the outputs into data/ats/${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}/ Resume.md and CoverLetter.md.
-5. Stop and reply with the file paths.`;
+5. Stop and reply with the file paths.
+CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of your actions as you go (e.g. "Reading templates...", "Reading job description...", "Generating Resume...", etc) so the user can see your progress.`;
         
         runAgy(promptText, generateBtn);
       }
