@@ -530,15 +530,24 @@ header p {
 }
 
 @media (max-width: 768px) {
+  body {
+    height: 100dvh;
+    overflow: hidden;
+  }
+  
   .app-container {
     padding: 0;
     zoom: 1; /* override any desktop zoom */
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   header {
     padding: 1rem 1.5rem;
     margin-bottom: 0;
+    flex-shrink: 0;
   }
 
   .kanban-board {
@@ -547,22 +556,61 @@ header p {
     gap: 0;
     padding: 0;
     -webkit-overflow-scrolling: touch;
+    flex: 1;
+    overflow-y: hidden;
   }
 
   .kanban-column {
     flex: 0 0 100vw;
     min-width: 100vw;
+    height: 100%;
     scroll-snap-align: start;
     border-radius: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
     background: transparent;
+    display: flex;
+    flex-direction: column;
   }
 
   .column-header {
     padding: 1rem 1.5rem;
+    flex-shrink: 0;
   }
 
   .column-body {
-    padding: 0 1.5rem 2rem 1.5rem;
+    padding: 0 1.5rem 3rem 1.5rem; /* extra bottom padding for indicator */
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
+
+  .page-indicator {
+    display: flex;
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .page-indicator .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .page-indicator .dot.active {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1.2);
+  }
+}
+.page-indicator {
+  display: none;
 }

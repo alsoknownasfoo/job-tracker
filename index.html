@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Career Tracker Dashboard</title>
-  <link rel="stylesheet" href="style.css?v=9" />
+  <link rel="stylesheet" href="style.css?v=10" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -18,10 +18,7 @@
             <span class="count" id="count-to_apply">0</span>
           </div>
           <button id="add-btn" class="icon-btn" aria-label="Add Role" title="Add Role">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           </button>
         </div>
         <div class="column-body" id="col-to_apply"></div>
@@ -50,7 +47,7 @@
       <div class="kanban-column" data-status="offer">
         <div class="column-header">
           <div style="display:flex; align-items:center; gap:0.5rem;">
-            <h2>Offer!</h2>
+            <h2>Offer</h2>
             <span class="count" id="count-offer">0</span>
           </div>
         </div>
@@ -68,6 +65,15 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- Mobile Page Indicator -->
+  <div class="page-indicator" id="page-indicator">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
   </div>
 
   <div class="modal-overlay" id="cli-modal">
@@ -99,6 +105,6 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>

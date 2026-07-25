@@ -427,6 +427,23 @@ document.addEventListener('DOMContentLoaded', () => {
     currentOutputElement = null;
   });
 });
+document.addEventListener('DOMContentLoaded', () => {
+  const board = document.querySelector('.kanban-board');
+  const dots = document.querySelectorAll('.page-indicator .dot');
+  
+  if (board && dots.length) {
+    board.addEventListener('scroll', () => {
+      if (window.innerWidth <= 768) {
+        const colWidth = board.offsetWidth;
+        const scrollLeft = board.scrollLeft;
+        const index = Math.round(scrollLeft / colWidth);
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+      }
+    }, { passive: true });
+  }
+});
 
 async function runAgy(promptText, buttonElement, effort = 'medium') {
   const originalHtml = buttonElement.innerHTML;
