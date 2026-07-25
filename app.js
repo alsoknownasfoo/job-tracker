@@ -237,10 +237,21 @@ function createCard(role) {
           </svg>
         </button>
         ${window.existingAtsFolders.has(role.company + '_' + role.title.replace(/[^a-zA-Z0-9]/g, '')) ? `
-        <button class="open-obsidian-btn" aria-label="View ATS Files" data-tooltip="View ATS Files">
+        <button class="open-resume-btn" aria-label="View Resume" data-tooltip="View Resume">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-            <path d="M13 2v7h7"></path>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <circle cx="12" cy="13" r="2"></circle>
+            <path d="M8 18c0-1.6 2.4-3 4-3s4 1.4 4 3"></path>
+          </svg>
+        </button>
+        <button class="open-cl-btn" aria-label="View Cover Letter" data-tooltip="View Cover Letter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
         </button>
         ` : `
@@ -304,12 +315,21 @@ CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of 
     });
   }
 
-  const openObsidianBtn = card.querySelector('.open-obsidian-btn');
-  if (openObsidianBtn) {
-    openObsidianBtn.addEventListener('click', (e) => {
+  const openResumeBtn = card.querySelector('.open-resume-btn');
+  if (openResumeBtn) {
+    openResumeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const folderName = `${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}`;
-      window.open(`/data/ats/${folderName}/`, '_blank');
+      window.open(`/data/ats/${folderName}/Resume.md`, '_blank');
+    });
+  }
+
+  const openClBtn = card.querySelector('.open-cl-btn');
+  if (openClBtn) {
+    openClBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const folderName = `${role.company}_${role.title.replace(/[^a-zA-Z0-9]/g, '')}`;
+      window.open(`/data/ats/${folderName}/CoverLetter.md`, '_blank');
     });
   }
 
