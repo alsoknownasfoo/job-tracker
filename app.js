@@ -245,17 +245,7 @@ function createCard(role) {
         </button>
         ` : `
         <button class="generate-btn" aria-label="Generate ATS Materials" data-tooltip="Generate ATS">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 4V2"/>
-            <path d="M15 16v-2"/>
-            <path d="M8 9h2"/>
-            <path d="M20 9h2"/>
-            <path d="M17.8 11.8L19 13"/>
-            <path d="M15 9h.01"/>
-            <path d="M17.8 6.2L19 5"/>
-            <path d="M3 21l9-9"/>
-            <path d="M12.2 6.2L11 5"/>
-          </svg>
+          <span style="display:inline-block; width:18px; height:18px; background-color:currentColor; -webkit-mask:url(https://static.thenounproject.com/png/8385768-200.png) no-repeat center/contain; mask:url(https://static.thenounproject.com/png/8385768-200.png) no-repeat center/contain;"></span>
         </button>
         `}
         <a href="${role.url}" class="apply-link" target="_blank" draggable="false" data-tooltip="View Role">
