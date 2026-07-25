@@ -374,8 +374,8 @@ header p {
   color: #fdfbf7;
 }
 
-/* Generate Button Styling */
-.generate-btn, .open-obsidian-btn {
+/* ATS Buttons Styling */
+.generate-btn {
   background: rgba(139, 154, 128, 0.1);
   color: #8b9a80;
   border: none;
@@ -387,8 +387,42 @@ header p {
   justify-content: center;
   transition: all 0.2s ease;
 }
-.generate-btn, .open-obsidian-btn:hover {
+.generate-btn:hover {
   background: rgba(139, 154, 128, 0.25);
+  color: #fdfbf7;
+}
+
+.open-resume-btn {
+  background: rgba(97, 175, 239, 0.1);
+  color: #61afef;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.open-resume-btn:hover {
+  background: rgba(97, 175, 239, 0.25);
+  color: #fdfbf7;
+}
+
+.open-cl-btn {
+  background: rgba(198, 120, 221, 0.1);
+  color: #c678dd;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.open-cl-btn:hover {
+  background: rgba(198, 120, 221, 0.25);
   color: #fdfbf7;
 }
 

@@ -11,6 +11,9 @@ const mimeTypes = {
   '.js': 'text/javascript',
   '.css': 'text/css',
   '.json': 'application/json',
+  '.md': 'text/plain; charset=utf-8',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg'
 };
 
 const dataDir = path.join(DIR, 'data');
