@@ -182,6 +182,7 @@ header p {
   cursor: grab;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .role-card.ready {
