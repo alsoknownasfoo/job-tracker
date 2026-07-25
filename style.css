@@ -496,6 +496,13 @@ header p {
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
   overflow: hidden;
 }
+#status-modal .modal-content {
+  height: auto;
+  max-width: 300px;
+}
+#status-modal .modal-body {
+  font-family: 'Outfit', sans-serif;
+}
 .modal-header {
   padding: 1rem;
   border-bottom: 1px solid var(--card-border);
@@ -522,3 +529,40 @@ header p {
   background: #0f0f0f;
 }
 
+@media (max-width: 768px) {
+  .app-container {
+    padding: 0;
+    zoom: 1; /* override any desktop zoom */
+    width: 100%;
+  }
+
+  header {
+    padding: 1rem 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .kanban-board {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: 0;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .kanban-column {
+    flex: 0 0 100vw;
+    min-width: 100vw;
+    scroll-snap-align: start;
+    border-radius: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    background: transparent;
+  }
+
+  .column-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .column-body {
+    padding: 0 1.5rem 2rem 1.5rem;
+  }
+}

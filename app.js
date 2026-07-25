@@ -328,7 +328,53 @@ CRITICAL: Please "think aloud" and stream a highly verbose, step-by-step log of 
     });
   }
 
+  let touchTimer;
+  card.addEventListener('touchstart', (e) => {
+    touchTimer = setTimeout(() => {
+      openStatusModal(role);
+    }, 500);
+  }, {passive: true});
+  card.addEventListener('touchend', () => clearTimeout(touchTimer));
+  card.addEventListener('touchmove', () => clearTimeout(touchTimer));
+  
+  card.addEventListener('contextmenu', (e) => {
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+      openStatusModal(role);
+    }
+  });
+
   return card;
+}
+
+function openStatusModal(role) {
+  const statusModal = document.getElementById('status-modal');
+  statusModal.classList.add('active');
+  
+  const options = statusModal.querySelectorAll('.status-option-btn');
+  const closeBtn = document.getElementById('status-modal-close-btn');
+  
+  const closeModal = () => {
+    statusModal.classList.remove('active');
+    options.forEach(opt => opt.replaceWith(opt.cloneNode(true)));
+    closeBtn.replaceWith(closeBtn.cloneNode(true));
+  };
+  
+  closeBtn.addEventListener('click', closeModal, {once: true});
+  
+  options.forEach(opt => {
+    opt.addEventListener('click', () => {
+      let state = [];
+      try { state = JSON.parse(localStorage.getItem('careerTrackerState')); } catch(e){}
+      const targetRole = state.find(r => r.id === role.id);
+      if (targetRole && targetRole.status !== opt.dataset.value) {
+        targetRole.status = opt.dataset.value;
+        saveState(state);
+        renderBoard(state);
+      }
+      closeModal();
+    });
+  });
 }
 
 function getDragAfterElement(container, y) {
